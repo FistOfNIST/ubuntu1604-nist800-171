@@ -60,4 +60,11 @@ chmod 640 /etc/audit/audit.rules
 cat gnome-changes.txt >> /etc/gdm3/greeter.dconf-defaults
 sudo dconf update
 sudo systemctl restart gdm
+#SSSD installation
+sudo apt install -qq krb5-user samba sssd sssd-tools realmd adcli chrony packagekit -y
+#Automate creation of home directory
+sed -i "30i session required    pam_mkhomedir.so skel=/etc/skel/ umask=0022" /etc/pam.d/common-session
+sudo systemctl enable sssd
+sudo sed -i "8i UsePAM yes" /etc/ssh/sshd_config
+sudo systemctl restart sshd
 exit
